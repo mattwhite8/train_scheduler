@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Train Scheduler</title>
+	<script src="https://www.gstatic.com/firebasejs/3.6.5/firebase.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+	<div class="row">
+		<form>
+		  <div class="form-group">
+		    <label for="train-name">Train Name</label>
+		    <input type="input" class="form-control" id="train-name" placeholder="Train Name">
+		  </div>
+		  <div class="form-group">
+		    <label for="destination">Destination</label>
+		    <input type="input" class="form-control" id="destination" placeholder="Destination">
+		  </div>
+		  <div class="form-group">
+		    <label for="time">First Train Time (HH:mm Military Time</label>
+		    <input type="input" class="form-control" id="time">
+		  </div>
+		  <div class="form-group">
+		    <label for="freq">Frequency (min)</label>
+		    <input type="input" class="form-control" id="freq">
+		  </div>
+		  <button type="submit" id="train-submit" class="btn btn-default">Submit</button>
+		</form>
+	</div>
+	
+	<div class="row">
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+		    <h3 class="panel-title">Schedule</h3>
+		  </div>
+		  <div class="panel-body">
+		  	<table id="train-table" class="table table-bordered">
+		  		<thead>
+			  		<tr>
+			  			<th>Train</th>
+			  			<th>Destination</th>
+			  			<th>Time</th>
+			  			<th>Frequency</th>
+			  		</tr>
+		  		</thead>
+		  		<tbody id="table-body">
+		  			
+		  		</tbody>
+		  	</table>
+		  </div>
+	    </div>
+   </div>
+</div>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>
