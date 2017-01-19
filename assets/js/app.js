@@ -37,10 +37,22 @@ function domSet(array){
 		}
 
 		var button = $("<button>").text('delete');
-		var currentTrain = array[i].train;
 
-		button.on('click', function(){
-			trainsRef.child(currentTrain).remove();
+		button.on('click', { extra : array[i] }, function(event){
+			var data = event.data;
+			console.log(data.extra.train);	
+
+			trainsRef.child(data.extra.train).remove();
+			$(this).text('');
+			$(this).html("<img src='assets/images/loader.gif'>");
+
+			if(timeOut){
+				clearInterval(timeOut);
+				timeOut = setInterval(function(){domSet(objectArr)}, 5000);
+			} else{
+				timeOut = setInterval(function(){domSet(objectArr)}, 5000);		
+			}	
+					
 		})
 
 		$("#table-body").append("<tr><td>"+array[i].train+"</td>"+
@@ -76,6 +88,8 @@ $("#train-submit").on('click', function(event){
 		time: firstTime
 	});
 
+	$("#table-body").html("<img src='assets/images/loader.gif'>");
+
 	//make sure the data gets to firebase first
 	setTimeout(function(){domSet(objectArr)}, 3000);
 
@@ -97,9 +111,12 @@ trainsRef.on("child_added", function(snapshot){
 });
 
 trainsRef.on("child_removed", function(snapshot){
+	if(objectArr.length === 1){
+		objectArr = [];
+	}
 	for(var i = 0; i < objectArr.length; i++){
 		if(objectArr[i].train === snapshot.val().train){
-			objectArr.splice(objectArr[i], 1);
+			objectArr = objectArr.splice(objectArr[i], 1);
 		}
 	}
 })
