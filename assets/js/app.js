@@ -12,6 +12,25 @@ var database = firebase.database();
 
 var trainsRef = database.ref('trains/');
 
+var objectArr = [];
+
+function trainRow(train, destination, initialTime, frequency){
+	this.train = train;
+	this.destination = destination;
+	this.initialTime = initialTime;
+	this.frequency = frequency;
+
+	this.domSet = function(){
+		$("#table-body").append("<tr><td>"+train+"</td>"+
+			"<td>"+destination+"</td>"+
+			"<td>"+frequency+"</td>"+
+			"<td>"+initialTime+"</td>"+
+			"<td></td></tr>");			
+	}
+}
+
+
+
 $("#train-submit").on('click', function(event){
 	event.preventDefault();
 
@@ -28,18 +47,26 @@ $("#train-submit").on('click', function(event){
 	trainsRef.push({
 		train: trainName,
 		destination: trainDestination,
-		time: firstTime,
-		frequency: freq
-	});
-
-	$("#table-body").empty();
-
-	trainsRef.on("child_added", function(snapshot){
-		var train = snapshot.val();
-		$("#table-body").append("<tr><td>"+train.train+"</td>"+
-			"<td>"+train.destination+"</td>"+
-			"<td>"+train.time+"</td>"+
-			"<td>"+train.frequency+"</td></tr>");		
+		frequency: freq,
+		time: firstTime
 	});
 
 });
+
+trainsRef.on("child_added", function(snapshot){
+	var train = snapshot.val();
+	console.log(train);
+
+	objectArr.push(new trainRow(train.train, train.destination, train.time, train.frequency));
+
+	for(var i = 0; i < objectArr.length; i++){
+		console.log('running through object');
+		objectArr[i].domSet();
+	}
+
+});
+
+
+
+
+
