@@ -37,10 +37,10 @@ function domSet(array){
 		}
 
 		var button = $("<button>").text('delete');
+		var currentTrain = array[i].train;
 
 		button.on('click', function(){
-			console.log(trainsRef.child(array[i].train));
-			//trainsRef.child(array[i].train).remove();
+			trainsRef.child(currentTrain).remove();
 		})
 
 		$("#table-body").append("<tr><td>"+array[i].train+"</td>"+
