@@ -36,11 +36,21 @@ function domSet(array){
 			array[i].initialTime.add(array[i].frequency, 'm');
 		}
 
+		var button = $("<button>").text('delete');
+
+		button.on('click', function(){
+			console.log(trainsRef.child(array[i].train));
+			//trainsRef.child(array[i].train).remove();
+		})
+
 		$("#table-body").append("<tr><td>"+array[i].train+"</td>"+
 			"<td>"+array[i].destination+"</td>"+
 			"<td>"+array[i].frequency+"</td>"+
 			"<td>"+array[i].initialTime.format('h:mm a')+"</td>"+
-			"<td>"+now.to(array[i].initialTime)+"</td></tr>");			
+			"<td>"+"Approximately "+now.to(array[i].initialTime)+"</td>"+
+			"<td></td></tr>");			
+
+		$("#table-body").children().eq(i).children().last().append(button);
 	}
 		
 }
@@ -59,7 +69,7 @@ $("#train-submit").on('click', function(event){
 	$("#time").val('');
 	$("#freq").val('');
 
-	trainsRef.push({
+	database.ref('trains/' + trainName).set({
 		train: trainName,
 		destination: trainDestination,
 		frequency: freq,
@@ -86,8 +96,19 @@ trainsRef.on("child_added", function(snapshot){
 
 });
 
+trainsRef.on("child_removed", function(snapshot){
+	for(var i = 0; i < objectArr.length; i++){
+		if(objectArr[i].train === snapshot.val().train){
+			objectArr.splice(objectArr[i], 1);
+		}
+	}
+})
+
 $( document ).ready(function(){
-	domSet(objectArr);
+
+	//wait for child_added events
+	setTimeout(function(){domSet(objectArr)}, 2000);
+
 })
 
 
