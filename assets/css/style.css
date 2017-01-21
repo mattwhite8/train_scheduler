@@ -1,0 +1,40 @@
+.panel-default {
+	background-color: #fbb234;
+	color: white;
+	border-radius: 25px
+}
+
+.panel-default > .panel-heading {
+	background-color: black;
+	color: white;
+	border-radius: 25px 25px 0 0;
+}
+
+thead {
+	color: black;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+	color: white;
+	background-color: black;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>td:nth-child(1) {
+	border-radius: 10px 0 0 10px;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>td:nth-child(6) {
+	border-radius: 0 10px 10px 0;
+}
+
+.table-striped>tbody>tr:nth-of-type(even) {
+	color: black;
+}
+
+.table>thead>tr>th {
+	border-bottom: none;
+}
+
+.table>tbody>tr>td {
+	border-top: none;
+}

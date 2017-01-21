@@ -38,19 +38,19 @@ function domSet(array){
 
 		var button = $("<button>").text('delete');
 
-		button.on('click', { extra : array[i] }, function(event){
+		//Scope work around: pass your extra data in as below:
+		button.on('click', { extra : array[i], index : i }, function(event){
 			var data = event.data;
 			console.log(data.extra.train);	
 
 			trainsRef.child(data.extra.train).remove();
-			$(this).text('');
-			$(this).html("<img src='assets/images/loader.gif'>");
+			$("tbody").children("tr").eq(data.index).empty();
 
 			if(timeOut){
 				clearInterval(timeOut);
-				timeOut = setInterval(function(){domSet(objectArr)}, 5000);
+				timeOut = setInterval(function(){domSet(objectArr)}, 60000);
 			} else{
-				timeOut = setInterval(function(){domSet(objectArr)}, 5000);		
+				timeOut = setInterval(function(){domSet(objectArr)}, 60000);		
 			}	
 					
 		})
@@ -88,16 +88,16 @@ $("#train-submit").on('click', function(event){
 		time: firstTime
 	});
 
-	$("#table-body").html("<img src='assets/images/loader.gif'>");
+	// $("#table-body").html("<img src='assets/images/loader.gif'>");
 
 	//make sure the data gets to firebase first
-	setTimeout(function(){domSet(objectArr)}, 3000);
+	setTimeout(function(){domSet(objectArr)}, 2000);
 
 	if(timeOut){
 		clearInterval(timeOut);
-		timeOut = setInterval(function(){domSet(objectArr)}, 5000);
+		timeOut = setInterval(function(){domSet(objectArr)}, 60000);
 	} else{
-		timeOut = setInterval(function(){domSet(objectArr)}, 5000);		
+		timeOut = setInterval(function(){domSet(objectArr)}, 60000);		
 	}
 
 });
