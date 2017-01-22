@@ -23,7 +23,7 @@ thead {
 	border-radius: 10px 0 0 10px;
 }
 
-.table-striped>tbody>tr:nth-of-type(odd)>td:nth-child(6) {
+.table-striped>tbody>tr:nth-of-type(odd)>td:nth-child(7) {
 	border-radius: 0 10px 10px 0;
 }
 

@@ -14,6 +14,10 @@ var trainsRef = database.ref('trains/');
 
 var timeOut;
 
+var trainKeys;
+
+var trainData;
+
 function domSet(data, keys){
 
 	console.log('domSet called');
@@ -25,37 +29,55 @@ function domSet(data, keys){
 		var arrivalTime = moment(data[keys[i]].time, 'h:mm a');
 
 		while(arrivalTime.isBefore(now, 'minute') === true){
-			arrivalTime.add(train.frequency, 'm');
+			arrivalTime.add(data[keys[i]].frequency, 'm');
 		}
 
-		var button = $("<button>").text('delete').addClass('btn btn-warning');
+		var buttonDelete = $("<button>").text('delete').addClass('btn btn-warning');
+		var buttonUpdate = $("<button>").text('update').addClass('btn btn-warning');
 
 		//Scope work around: pass your extra data in as below:
-		button.on('click', { extra : data[keys[i]] }, function(event){
+		buttonDelete.on('click', { extra : keys[i] }, function(event){
 			var data = event.data;
-			console.log(data.extra.train);	
+			console.log(data.extra);	
 
-			trainsRef.child(data.extra.train).remove();
+			trainsRef.child(data.extra).remove();
 			$(this).closest('tr').remove();
 					
+		});
+
+		buttonUpdate.on('click', { extra : keys[i] }, function(event){
+			var data = event.data;
+			console.log(data.extra);
+
+			var trainName = $("#train-name").val().trim();
+			var trainDestination = $("#destination").val().trim();
+			var firstTime = $("#time").val().trim();
+			var freq = $("#freq").val().trim();
+
+			$("#train-name").val('');
+			$("#destination").val('');
+			$("#time").val('');
+			$("#freq").val('');
+
+			database.ref('trains/' + data.extra).update({
+				train: trainName,
+				destination: trainDestination,
+				frequency: freq,
+				time: moment(firstTime, 'h:mm a').format('h:mm a')
+			});
 		})
 
 		$("#table-body").append("<tr><td>"+data[keys[i]].train+"</td>"+
 			"<td>"+data[keys[i]].destination+"</td>"+
 			"<td>"+data[keys[i]].frequency+"</td>"+
-			"<td>"+data[keys[i]].time+"</td>"+
-			"<td>"+Math.abs(now.diff(moment(data[keys[i]].time,'h:mm a'),'minutes'))+" minutes</td>"+
+			"<td>"+arrivalTime.format('h:mm a')+"</td>"+
+			"<td>"+Math.abs(now.diff(moment(arrivalTime,'h:mm a'),'minutes'))+" minute(s)</td>"+
+			"<td></td>"+
 			"<td></td></tr>");			
 
-		$("#table-body").children('tr').children('td').last().append(button);		
+		$("#table-body").children('tr').eq(i).children('td').eq(5).append(buttonUpdate);
+		$("#table-body").children('tr').children('td').last().append(buttonDelete);		
 	}
-
-	if(timeOut){
-		clearInterval(timeOut);
-		timeOut = setInterval(function(){domSet(data, keys)}, 60000);
-	} else{
-		timeOut = setInterval(function(){domSet(data, keys)}, 60000);		
-	}		
 		
 }
 
@@ -73,7 +95,7 @@ $("#train-submit").on('click', function(event){
 	$("#time").val('');
 	$("#freq").val('');
 
-	database.ref('trains/' + trainName).set({
+	database.ref('trains/').push({
 		train: trainName,
 		destination: trainDestination,
 		frequency: freq,
@@ -82,7 +104,16 @@ $("#train-submit").on('click', function(event){
 
 });
 
+
 trainsRef.on("value", function(snapshot){
+
+	console.log('on value runs');
+
+	//Store these variables for use in updating
+	trainKeys = Object.keys(snapshot.val());
+	trainData = snapshot.val();
+
+	//If null, don't run domSet
 	if(snapshot.val()){
 		var keys = Object.keys(snapshot.val());
 		var data = snapshot.val();
@@ -90,6 +121,14 @@ trainsRef.on("value", function(snapshot){
 	} else {
 		clearInterval(timeOut);
 	}
+
+	if(timeOut){
+		clearInterval(timeOut);
+		timeOut = setInterval(function(){domSet(data, keys)}, 60000);
+	} else{
+		timeOut = setInterval(function(){domSet(data, keys)}, 60000);		
+	}		
+
 })
 
 
