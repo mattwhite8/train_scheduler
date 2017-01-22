@@ -14,42 +14,48 @@ var trainsRef = database.ref('trains/');
 
 var timeOut;
 
-function domSet(train){
+function domSet(data, keys){
 
-	var now = moment();
-	var arrivalTime = moment(train.time, 'h:mm a');
+	console.log('domSet called');
 
-	while(arrivalTime.isBefore(now, 'minute') === true){
-		arrivalTime.add(train.frequency, 'm');
+	$("#table-body").empty();
+
+	for(var i = 0; i < keys.length; i++){
+		var now = moment();
+		var arrivalTime = moment(data[keys[i]].time, 'h:mm a');
+
+		while(arrivalTime.isBefore(now, 'minute') === true){
+			arrivalTime.add(train.frequency, 'm');
+		}
+
+		var button = $("<button>").text('delete').addClass('btn btn-warning');
+
+		//Scope work around: pass your extra data in as below:
+		button.on('click', { extra : data[keys[i]] }, function(event){
+			var data = event.data;
+			console.log(data.extra.train);	
+
+			trainsRef.child(data.extra.train).remove();
+			$(this).closest('tr').remove();
+					
+		})
+
+		$("#table-body").append("<tr><td>"+data[keys[i]].train+"</td>"+
+			"<td>"+data[keys[i]].destination+"</td>"+
+			"<td>"+data[keys[i]].frequency+"</td>"+
+			"<td>"+data[keys[i]].time+"</td>"+
+			"<td>"+Math.abs(now.diff(moment(data[keys[i]].time,'h:mm a'),'minutes'))+" minutes</td>"+
+			"<td></td></tr>");			
+
+		$("#table-body").children('tr').children('td').last().append(button);		
 	}
 
-	var button = $("<button>").text('delete');
-
-	//Scope work around: pass your extra data in as below:
-	button.on('click', { extra : train }, function(event){
-		var data = event.data;
-		console.log(data.extra.train);	
-
-		trainsRef.child(data.extra.train).remove();
-		$(this).closest('tr').remove();
-
-		if(timeOut){
-			clearInterval(timeOut);
-			timeOut = setInterval(function(){domSet(data.extra.train)}, 60000);
-		} else{
-			timeOut = setInterval(function(){domSet(data.extra.train)}, 60000);		
-		}	
-				
-	})
-
-	$("#table-body").append("<tr><td>"+train.train+"</td>"+
-		"<td>"+train.destination+"</td>"+
-		"<td>"+train.frequency+"</td>"+
-		"<td>"+train.time+"</td>"+
-		"<td>"+"Approximately "+now.to(moment(train.time,'h:mm a'))+"</td>"+
-		"<td></td></tr>");			
-
-	$("#table-body").children('tr').children('td').last().append(button);
+	if(timeOut){
+		clearInterval(timeOut);
+		timeOut = setInterval(function(){domSet(data, keys)}, 60000);
+	} else{
+		timeOut = setInterval(function(){domSet(data, keys)}, 60000);		
+	}		
 		
 }
 
@@ -76,13 +82,17 @@ $("#train-submit").on('click', function(event){
 
 });
 
-trainsRef.on("child_added", function(snapshot){
-	var train = snapshot.val();
-	console.log(train);
+trainsRef.on("value", function(snapshot){
+	if(snapshot.val()){
+		var keys = Object.keys(snapshot.val());
+		var data = snapshot.val();
+		domSet(data, keys);
+	} else {
+		clearInterval(timeOut);
+	}
+})
 
-	domSet(train);
 
-});
 
 
 
