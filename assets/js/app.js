@@ -39,6 +39,7 @@ firebase.auth().signInWithPopup(provider).then(function(result) {
   // ...
 });
 
+var user = firebase.auth().currentUser;
 
 function domSet(data, keys){
 
@@ -152,6 +153,10 @@ trainsRef.on("value", function(snapshot){
 		clearInterval(timeOut);
 		console.log('timeOut cleared');
 
+	}
+
+	if(user){
+		console.log(user);
 	}
 
 }, function(errorObject){
