@@ -60,6 +60,11 @@ function domSet(data, keys){
 
 		//Scope work around: pass your extra data in as below:
 		buttonDelete.on('click', { extra : keys[i] }, function(event){
+
+			if(user === null){
+				return alert('Pleas sign in first');
+			}
+
 			var data = event.data;
 			console.log(data.extra);	
 
@@ -70,6 +75,11 @@ function domSet(data, keys){
 
 		//Scope work around: pass your extra data in as below
 		buttonUpdate.on('click', { extra : keys[i] }, function(event){
+
+			if(user === null){
+				return alert('Please sign in first');
+			}
+
 			var data = event.data;
 			console.log(data.extra);
 
@@ -107,6 +117,11 @@ function domSet(data, keys){
 
 
 $("#train-submit").on('click', function(event){
+
+	if(user === null){
+		return alert('Please sign in first');
+	}
+
 	event.preventDefault();
 
 	var trainName = $("#train-name").val().trim();
