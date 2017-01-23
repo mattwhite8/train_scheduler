@@ -12,8 +12,10 @@ var database = firebase.database();
 
 var trainsRef = database.ref('trains/');
 
+//Variable for storing interval
 var timeOut;
 
+//Will use trainKeys and trainData later for storing data used in updating firebase
 var trainKeys;
 
 var trainData;
@@ -45,6 +47,7 @@ function domSet(data, keys){
 					
 		});
 
+		//Scope work around: pass your extra data in as below
 		buttonUpdate.on('click', { extra : keys[i] }, function(event){
 			var data = event.data;
 			console.log(data.extra);
@@ -65,7 +68,7 @@ function domSet(data, keys){
 				frequency: freq,
 				time: moment(firstTime, 'h:mm a').format('h:mm a')
 			});
-		})
+		});
 
 		$("#table-body").append("<tr><td>"+data[keys[i]].train+"</td>"+
 			"<td>"+data[keys[i]].destination+"</td>"+
@@ -108,26 +111,28 @@ $("#train-submit").on('click', function(event){
 trainsRef.on("value", function(snapshot){
 
 	console.log('on value runs');
-
-	//Store these variables for use in updating
-	trainKeys = Object.keys(snapshot.val());
-	trainData = snapshot.val();
+	console.log(snapshot.val());
 
 	//If null, don't run domSet
-	if(snapshot.val()){
+	if(snapshot.val() !== null){
 		var keys = Object.keys(snapshot.val());
 		var data = snapshot.val();
-		domSet(data, keys);
-	} else {
-		clearInterval(timeOut);
-	}
 
-	if(timeOut){
+		//Store these variables for use in updating
+		trainKeys = Object.keys(snapshot.val());
+		trainData = snapshot.val();		
+
+		domSet(data, keys);
+
 		clearInterval(timeOut);
 		timeOut = setInterval(function(){domSet(data, keys)}, 60000);
-	} else{
-		timeOut = setInterval(function(){domSet(data, keys)}, 60000);		
-	}		
+		console.log('timeOut cleared and reset');
+
+	} else {
+		clearInterval(timeOut);
+		console.log('timeOut cleared');
+
+	}
 
 })
 
