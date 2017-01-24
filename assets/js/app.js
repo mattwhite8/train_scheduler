@@ -143,6 +143,15 @@ $("#train-submit").on('click', function(event){
 
 });
 
+$("#sign-out").on('click', function(){
+	firebase.auth().signOut().then(function() {
+	  // Sign-out successful.
+	}, function(error) {
+	  // An error happened.
+	  console.log(error);
+	});
+})
+
 
 trainsRef.on("value", function(snapshot){
 
@@ -180,6 +189,7 @@ trainsRef.on("value", function(snapshot){
 }, function(errorObject){
 	console.log('Errors handled: ' +errorObject.code);
 });
+
 
 
 
