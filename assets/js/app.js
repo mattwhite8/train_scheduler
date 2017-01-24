@@ -61,9 +61,9 @@ function domSet(data, keys){
 		//Scope work around: pass your extra data in as below:
 		buttonDelete.on('click', { extra : keys[i] }, function(event){
 
-			if(user === null){
-				return alert('Pleas sign in first');
-			}
+			// if(user === null){
+			// 	return alert('Pleas sign in first');
+			// }
 
 			var data = event.data;
 			console.log(data.extra);	
@@ -76,9 +76,9 @@ function domSet(data, keys){
 		//Scope work around: pass your extra data in as below
 		buttonUpdate.on('click', { extra : keys[i] }, function(event){
 
-			if(user === null){
-				return alert('Please sign in first');
-			}
+			// if(user === null){
+			// 	return alert('Please sign in first');
+			// }
 
 			var data = event.data;
 			console.log(data.extra);
@@ -118,9 +118,9 @@ function domSet(data, keys){
 
 $("#train-submit").on('click', function(event){
 
-	if(user === null){
-		return alert('Please sign in first');
-	}
+	// if(user === null){
+	// 	return alert('Please sign in first');
+	// }
 
 	event.preventDefault();
 
@@ -168,11 +168,14 @@ trainsRef.on("value", function(snapshot){
 		clearInterval(timeOut);
 		console.log('timeOut cleared');
 
+		//if deleting last row, this will cause change to show across browsers
+		$("#table-body").empty();
+
 	}
 
-	if(user){
-		console.log(user);
-	}
+	// if(user){
+	// 	console.log(user);
+	// }
 
 }, function(errorObject){
 	console.log('Errors handled: ' +errorObject.code);

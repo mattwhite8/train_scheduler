@@ -1,3 +1,27 @@
+@font-face {
+	font-family: nashville;
+	src: url(../fonts/NASHVILL.ttf);
+}
+
+body {
+	background: url('http://sittard365.com/wp-content/uploads/2014/02/102-Sunset-At-Train-Station-Sittard1.jpg') no-repeat center center fixed;
+	background-size: cover;
+}
+
+.jumbotron {
+	background-color: transparent;
+	font-family: nashville;
+	border-bottom: 1px solid white;
+}
+
+.jumbotron > h1 {
+	color: white;
+}
+
+.jumbotron > p {
+	color: white;
+}
+
 .panel-default {
 	background-color: #fbb234;
 	color: white;
