@@ -8,6 +8,8 @@ var config = {
 };
 firebase.initializeApp(config);
 
+//Google's Firebase Auth UI Code Below 
+
  // FirebaseUI config.
 var uiConfig = {
   'callbacks': {
@@ -37,7 +39,7 @@ var currentUid = null;
  * Redirects to the FirebaseUI widget.
  */
 var signInWithRedirect = function() {
-  window.location.assign('/widget');
+  window.location.assign('../../widget');
 };
 
 /**
