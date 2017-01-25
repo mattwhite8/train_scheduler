@@ -3,8 +3,10 @@
 <head>
 	<title>Train Scheduler</title>
 	<script src="https://www.gstatic.com/firebasejs/3.6.5/firebase.js"></script>
+	<script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
 	<link rel="stylesheet" type="text/css" href="assets/css/reset.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
 	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
@@ -18,8 +20,7 @@
 	<div class="jumbotron text-center">
 		<h1>TRAIN TIME</h1>
 		<p>All Aboard!</p>
-		<button onclick="signIn()" class="btn btn-info">Sign In</button>
-		<button onclick="signOut()" class="btn btn-danger">Sign Out</button>
+	    <div id="firebaseui-auth-container"></div>
 	</div>
 
 	<div class="row">
