@@ -142,13 +142,13 @@ function domSet(data, keys){
 
 			if(firebase.auth().currentUser === null){
 				return alert('Pleas sign in first');
+			} else {
+				var data = event.data;
+				console.log(data.extra);	
+
+				trainsRef.child(data.extra).remove();
+				$(this).closest('tr').remove();
 			}
-
-			var data = event.data;
-			console.log(data.extra);	
-
-			trainsRef.child(data.extra).remove();
-			$(this).closest('tr').remove();
 					
 		});
 
@@ -157,27 +157,29 @@ function domSet(data, keys){
 
 			if(firebase.auth().currentUser === null){
 				return alert('Please sign in first');
+			} else {
+				var data = event.data;
+				console.log(data.extra);
+
+				var trainName = $("#train-name").val().trim();
+				var trainDestination = $("#destination").val().trim();
+				var firstTime = $("#time").val().trim();
+				var freq = $("#freq").val().trim();
+
+				$("#train-name").val('');
+				$("#destination").val('');
+				$("#time").val('');
+				$("#freq").val('');
+
+				database.ref('trains/' + data.extra).update({
+					train: trainName,
+					destination: trainDestination,
+					frequency: freq,
+					time: moment(firstTime, 'h:mm a').format('h:mm a')
+				});
+
 			}
 
-			var data = event.data;
-			console.log(data.extra);
-
-			var trainName = $("#train-name").val().trim();
-			var trainDestination = $("#destination").val().trim();
-			var firstTime = $("#time").val().trim();
-			var freq = $("#freq").val().trim();
-
-			$("#train-name").val('');
-			$("#destination").val('');
-			$("#time").val('');
-			$("#freq").val('');
-
-			database.ref('trains/' + data.extra).update({
-				train: trainName,
-				destination: trainDestination,
-				frequency: freq,
-				time: moment(firstTime, 'h:mm a').format('h:mm a')
-			});
 		});
 
 		$("#table-body").append("<tr><td>"+data[keys[i]].train+"</td>"+
@@ -197,28 +199,28 @@ function domSet(data, keys){
 
 $("#train-submit").on('click', function(event){
 
-	if(firebase.auth().currentUser === null){
-		return alert('Please sign in first');
-	}
-
 	event.preventDefault();
 
-	var trainName = $("#train-name").val().trim();
-	var trainDestination = $("#destination").val().trim();
-	var firstTime = $("#time").val().trim();
-	var freq = $("#freq").val().trim();
+	if(firebase.auth().currentUser === null){
+		return alert('Please sign in first');
+	} else {
+		var trainName = $("#train-name").val().trim();
+		var trainDestination = $("#destination").val().trim();
+		var firstTime = $("#time").val().trim();
+		var freq = $("#freq").val().trim();
 
-	$("#train-name").val('');
-	$("#destination").val('');
-	$("#time").val('');
-	$("#freq").val('');
+		$("#train-name").val('');
+		$("#destination").val('');
+		$("#time").val('');
+		$("#freq").val('');
 
-	database.ref('trains/').push({
-		train: trainName,
-		destination: trainDestination,
-		frequency: freq,
-		time: moment(firstTime, 'h:mm a').format('h:mm a')
-	});
+		database.ref('trains/').push({
+			train: trainName,
+			destination: trainDestination,
+			frequency: freq,
+			time: moment(firstTime, 'h:mm a').format('h:mm a')
+		});
+	}
 
 });
 
