@@ -15,11 +15,6 @@ var trainsRef = database.ref('trains/');
 //Variable for storing interval
 var timeOut;
 
-//Will use trainKeys and trainData later for storing data used in updating firebase
-// var trainKeys;
-
-// var trainData;
-
 var user;
 
  /** Firebase Sign In Quick Start Code
@@ -145,9 +140,9 @@ function domSet(data, keys){
 		//Scope work around: pass your extra data in as below:
 		buttonDelete.on('click', { extra : keys[i] }, function(event){
 
-			// if(user === null){
-			// 	return alert('Pleas sign in first');
-			// }
+			if(firebase.auth().currentUser === null){
+				return alert('Pleas sign in first');
+			}
 
 			var data = event.data;
 			console.log(data.extra);	
@@ -160,9 +155,9 @@ function domSet(data, keys){
 		//Scope work around: pass your extra data in as below
 		buttonUpdate.on('click', { extra : keys[i] }, function(event){
 
-			// if(user === null){
-			// 	return alert('Please sign in first');
-			// }
+			if(firebase.auth().currentUser === null){
+				return alert('Please sign in first');
+			}
 
 			var data = event.data;
 			console.log(data.extra);
@@ -202,9 +197,9 @@ function domSet(data, keys){
 
 $("#train-submit").on('click', function(event){
 
-	// if(user === null){
-	// 	return alert('Please sign in first');
-	// }
+	if(firebase.auth().currentUser === null){
+		return alert('Please sign in first');
+	}
 
 	event.preventDefault();
 

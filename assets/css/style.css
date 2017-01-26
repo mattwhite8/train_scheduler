@@ -12,6 +12,12 @@ body {
 	display: none;
 }
 
+.mdl-card {
+	width: inherit;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
 .container > .jumbotron {
 	border-radius: 0;
 }
