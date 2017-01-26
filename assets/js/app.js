@@ -8,125 +8,6 @@ var config = {
 };
 firebase.initializeApp(config);
 
-//Google's Firebase Auth UI Code Below 
-
- // FirebaseUI config.
-var uiConfig = {
-  'callbacks': {
-    // Called when the user has been successfully signed in.
-    'signInSuccess': function(user, credential, redirectUrl) {
-      handleSignedInUser(user);
-      // Do not redirect.
-      return false;
-    }
-  },
-  // Opens IDP Providers sign-in flow in a popup.
-  'signInFlow': 'popup',
-  'signInOptions': [
-    // TODO(developer): Remove the providers you don't need for your app.
-    firebase.auth.EmailAuthProvider.PROVIDER_ID
-  ],
-  // Terms of service url.
-  'tosUrl': 'https://www.google.com'
-};
-
-// Initialize the FirebaseUI Widget using Firebase.
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
-// Keep track of the currently signed in user.
-var currentUid = null;
-
-/**
- * Redirects to the FirebaseUI widget.
- */
-var signInWithRedirect = function() {
-  window.location.assign('../../widget');
-};
-
-/**
- * Open a popup with the FirebaseUI widget.
- */
-var signInWithPopup = function() {
-  window.open('../../widget', 'Sign In', 'width=985,height=735');
-};
-
-/**
- * Displays the UI for a signed in user.
- * @param {!firebase.User} user
- */
-var handleSignedInUser = function(user) {
-  currentUid = user.uid;
-  document.getElementById('user-signed-in').style.display = 'block';
-  document.getElementById('user-signed-out').style.display = 'none';
-  document.getElementById('name').textContent = user.displayName;
-  document.getElementById('email').textContent = user.email;
-  if (user.photoURL){
-    document.getElementById('photo').src = user.photoURL;
-    document.getElementById('photo').style.display = 'block';
-  } else {
-    document.getElementById('photo').style.display = 'none';
-  }
-};
-
-/**
- * Displays the UI for a signed out user.
- */
-var handleSignedOutUser = function() {
-  document.getElementById('user-signed-in').style.display = 'none';
-  document.getElementById('user-signed-out').style.display = 'block';
-  ui.start('#firebaseui-container', uiConfig);
-};
-
-// Listen to change in auth state so it displays the correct UI for when
-// the user is signed in or not.
-firebase.auth().onAuthStateChanged(function(user) {
-  // The observer is also triggered when the user's token has expired and is
-  // automatically refreshed. In that case, the user hasn't changed so we should
-  // not update the UI.
-  if (user && user.uid == currentUid) {
-    return;
-  }
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('loaded').style.display = 'block';
-  user ? handleSignedInUser(user) : handleSignedOutUser();
-});
-
-/**
- * Deletes the user's account.
- */
-var deleteAccount = function() {
-  firebase.auth().currentUser.delete().catch(function(error) {
-    if (error.code == 'auth/requires-recent-login') {
-      // The user's credential is too old. She needs to sign in again.
-      firebase.auth().signOut().then(function() {
-        // The timeout allows the message to be displayed after the UI has
-        // changed to the signed out state.
-        setTimeout(function() {
-          alert('Please sign in again to delete your account.');
-        }, 1);
-      });
-    }
-  });
-};
-
-/**
- * Initializes the app.
- */
-var initApp = function() {
-  document.getElementById('sign-in-with-redirect').addEventListener(
-      'click', signInWithRedirect);
-  document.getElementById('sign-in-with-popup').addEventListener(
-      'click', signInWithPopup);
-  document.getElementById('sign-out').addEventListener('click', function() {
-    firebase.auth().signOut();
-  });
-  document.getElementById('delete-account').addEventListener(
-      'click', function() {
-        deleteAccount();
-      });
-};
-
-
-
 var database = firebase.database();
 
 var trainsRef = database.ref('trains/');
@@ -135,40 +16,114 @@ var trainsRef = database.ref('trains/');
 var timeOut;
 
 //Will use trainKeys and trainData later for storing data used in updating firebase
-var trainKeys;
+// var trainKeys;
 
-var trainData;
+// var trainData;
 
 var user;
 
-function signIn(){
-	firebase.auth().signInWithPopup(provider).then(function(result) {
-	  // This gives you a GitHub Access Token. You can use it to access the GitHub API.
-	  var token = result.credential.accessToken;
-	  // The signed-in user info.
-	  user = result.user;
-	  // ...
-	}).catch(function(error) {
-	  // Handle Errors here.
-	  var errorCode = error.code;
-	  var errorMessage = error.message;
-	  // The email of the user's account used.
-	  var email = error.email;
-	  // The firebase.auth.AuthCredential type that was used.
-	  var credential = error.credential;
-	  // ...
-	});
-};
+ /** Firebase Sign In Quick Start Code
+     * Function called when clicking the Login/Logout button.
+     */
+    // [START buttoncallback]
+    function toggleSignIn() {
+      if (!firebase.auth().currentUser) {
+        // [START createprovider]
+        var provider = new firebase.auth.GoogleAuthProvider();
+        // [END createprovider]
+        // [START addscopes]
+        provider.addScope('https://www.googleapis.com/auth/plus.login');
+        // [END addscopes]
+        // [START signin]
+        firebase.auth().signInWithRedirect(provider);
+        // [END signin]
+      } else {
+        // [START signout]
+        firebase.auth().signOut();
+        // [END signout]
+      }
+      // [START_EXCLUDE]
+      document.getElementById('quickstart-sign-in').disabled = true;
+      // [END_EXCLUDE]
+    }
+    // [END buttoncallback]
 
-function signOut(){
-	firebase.auth().signOut().then(function() {
-	  // Sign-out successful.
-	  console.log('sign in');
-	}, function(error) {
-	  // An error happened.
-	  console.log(error);
-	});
-}
+/**
+     * initApp handles setting up UI event listeners and registering Firebase auth listeners:
+     *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
+     *    out, and that is where we update the UI.
+     *  - firebase.auth().getRedirectResult(): This promise completes when the user gets back from
+     *    the auth redirect flow. It is where you can get the OAuth access token from the IDP.
+     */
+    function initApp() {
+      // Result from Redirect auth flow.
+      // [START getidptoken]
+      firebase.auth().getRedirectResult().then(function(result) {
+        if (result.credential) {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = result.credential.accessToken;
+          // [START_EXCLUDE]
+          document.getElementById('quickstart-oauthtoken').textContent = token;
+        } else {
+          document.getElementById('quickstart-oauthtoken').textContent = 'null';
+          // [END_EXCLUDE]
+        }
+        // The signed-in user info.
+        var user = result.user;
+      }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // [START_EXCLUDE]
+        if (errorCode === 'auth/account-exists-with-different-credential') {
+          alert('You have already signed up with a different auth provider for that email.');
+          // If you are using multiple auth providers on your app you should handle linking
+          // the user's accounts here.
+        } else {
+          console.error(error);
+        }
+        // [END_EXCLUDE]
+      });
+      // [END getidptoken]
+      // Listening for auth state changes.
+      // [START authstatelistener]
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          var displayName = user.displayName;
+          var email = user.email;
+          var emailVerified = user.emailVerified;
+          var photoURL = user.photoURL;
+          var isAnonymous = user.isAnonymous;
+          var uid = user.uid;
+          var providerData = user.providerData;
+          // [START_EXCLUDE]
+          document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+          document.getElementById('quickstart-sign-in').textContent = 'Sign out';
+          document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+          // [END_EXCLUDE]
+        } else {
+          // User is signed out.
+          // [START_EXCLUDE]
+          document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+          document.getElementById('quickstart-sign-in').textContent = 'Sign in with Google';
+          document.getElementById('quickstart-account-details').textContent = 'null';
+          document.getElementById('quickstart-oauthtoken').textContent = 'null';
+          // [END_EXCLUDE]
+        }
+        // [START_EXCLUDE]
+        document.getElementById('quickstart-sign-in').disabled = false;
+        // [END_EXCLUDE]
+      });
+      // [END authstatelistener]
+      document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
+    }
+
+    //End Google UI Quick Start code
 
 function domSet(data, keys){
 
