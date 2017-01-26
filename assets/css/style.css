@@ -8,9 +8,9 @@ body {
 	background-size: cover;
 }
 
-.quickstart-user-details-container {
+/*.quickstart-user-details-container {
 	display: none;
-}
+}*/
 
 .container > .jumbotron {
 	border-radius: 0;
