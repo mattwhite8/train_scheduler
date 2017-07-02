@@ -1,3 +1,6 @@
+/*global firebase moment trainKeys trainData:true*/
+/* eslint-disable no-alert, no-console */
+
 // Initialize Firebase
 var config = {
 	apiKey: "AIzaSyD5l7LiBXr-xUc9dnk_SR2m_kqp_rQkWdI",
@@ -10,38 +13,38 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
-var trainsRef = database.ref('trains/');
+var trainsRef = database.ref("trains/");
 
 //Variable for storing interval
 var timeOut;
 
 var user;
 
- /** Firebase Sign In Quick Start Code
+/** Firebase Sign In Quick Start Code
      * Function called when clicking the Login/Logout button.
      */
-    // [START buttoncallback]
-    function toggleSignIn() {
-      if (!firebase.auth().currentUser) {
-        // [START createprovider]
-        var provider = new firebase.auth.GoogleAuthProvider();
-        // [END createprovider]
-        // [START addscopes]
-        provider.addScope('https://www.googleapis.com/auth/plus.login');
-        // [END addscopes]
-        // [START signin]
-        firebase.auth().signInWithRedirect(provider);
-        // [END signin]
-      } else {
-        // [START signout]
-        firebase.auth().signOut();
-        // [END signout]
-      }
-      // [START_EXCLUDE]
-      document.getElementById('quickstart-sign-in').disabled = true;
-      // [END_EXCLUDE]
-    }
-    // [END buttoncallback]
+// [START buttoncallback]
+function toggleSignIn() {
+	if (!firebase.auth().currentUser) {
+		// [START createprovider]
+		var provider = new firebase.auth.GoogleAuthProvider();
+		// [END createprovider]
+		// [START addscopes]
+		provider.addScope("https://www.googleapis.com/auth/plus.login");
+		// [END addscopes]
+		// [START signin]
+		firebase.auth().signInWithRedirect(provider);
+		// [END signin]
+	} else {
+		// [START signout]
+		firebase.auth().signOut();
+		// [END signout]
+	}
+	// [START_EXCLUDE]
+	document.getElementById("quickstart-sign-in").disabled = true;
+	// [END_EXCLUDE]
+}
+// [END buttoncallback]
 
 /**
      * initApp handles setting up UI event listeners and registering Firebase auth listeners:
@@ -50,113 +53,113 @@ var user;
      *  - firebase.auth().getRedirectResult(): This promise completes when the user gets back from
      *    the auth redirect flow. It is where you can get the OAuth access token from the IDP.
      */
-    function initApp() {
-      // Result from Redirect auth flow.
-      // [START getidptoken]
-      firebase.auth().getRedirectResult().then(function(result) {
-        if (result.credential) {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          var token = result.credential.accessToken;
-          // [START_EXCLUDE]
-          document.getElementById('quickstart-oauthtoken').textContent = token;
-        } else {
-          document.getElementById('quickstart-oauthtoken').textContent = 'null';
-          // [END_EXCLUDE]
-        }
-        // The signed-in user info.
-        var user = result.user;
-      }).catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // [START_EXCLUDE]
-        if (errorCode === 'auth/account-exists-with-different-credential') {
-          alert('You have already signed up with a different auth provider for that email.');
-          // If you are using multiple auth providers on your app you should handle linking
-          // the user's accounts here.
-        } else {
-          console.error(error);
-        }
-        // [END_EXCLUDE]
-      });
-      // [END getidptoken]
-      // Listening for auth state changes.
-      // [START authstatelistener]
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          // User is signed in.
-          var displayName = user.displayName;
-          var email = user.email;
-          var emailVerified = user.emailVerified;
-          var photoURL = user.photoURL;
-          var isAnonymous = user.isAnonymous;
-          var uid = user.uid;
-          var providerData = user.providerData;
-          // [START_EXCLUDE]
-          document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
-          document.getElementById('quickstart-sign-in').textContent = 'Sign out';
-          document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
-          // [END_EXCLUDE]
-        } else {
-          // User is signed out.
-          // [START_EXCLUDE]
-          document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
-          document.getElementById('quickstart-sign-in').textContent = 'Sign in with Google';
-          document.getElementById('quickstart-account-details').textContent = 'null';
-          document.getElementById('quickstart-oauthtoken').textContent = 'null';
-          // [END_EXCLUDE]
-        }
-        // [START_EXCLUDE]
-        document.getElementById('quickstart-sign-in').disabled = false;
-        // [END_EXCLUDE]
-      });
-      // [END authstatelistener]
-      document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
-    }
+function initApp() {
+	// Result from Redirect auth flow.
+	// [START getidptoken]
+	firebase.auth().getRedirectResult().then(function(result) {
+		if (result.credential) {
+			// This gives you a Google Access Token. You can use it to access the Google API.
+			var token = result.credential.accessToken;
+			// [START_EXCLUDE]
+			document.getElementById("quickstart-oauthtoken").textContent = token;
+		} else {
+			document.getElementById("quickstart-oauthtoken").textContent = "null";
+			// [END_EXCLUDE]
+		}
+		// The signed-in user info.
+		var user = result.user;
+	}).catch(function(error) {
+		// Handle Errors here.
+		var errorCode = error.code;
+		var errorMessage = error.message;
+		// The email of the user's account used.
+		var email = error.email;
+		// The firebase.auth.AuthCredential type that was used.
+		var credential = error.credential;
+		// [START_EXCLUDE]
+		if (errorCode === "auth/account-exists-with-different-credential") {
+			alert("You have already signed up with a different auth provider for that email.");
+			// If you are using multiple auth providers on your app you should handle linking
+			// the user's accounts here.
+		} else {
+			console.error(error);
+		}
+		// [END_EXCLUDE]
+	});
+	// [END getidptoken]
+	// Listening for auth state changes.
+	// [START authstatelistener]
+	firebase.auth().onAuthStateChanged(function(user) {
+		if (user) {
+			// User is signed in.
+			var displayName = user.displayName;
+			var email = user.email;
+			var emailVerified = user.emailVerified;
+			var photoURL = user.photoURL;
+			var isAnonymous = user.isAnonymous;
+			var uid = user.uid;
+			var providerData = user.providerData;
+			// [START_EXCLUDE]
+			document.getElementById("quickstart-sign-in-status").textContent = "Signed in";
+			document.getElementById("quickstart-sign-in").textContent = "Sign out";
+			document.getElementById("quickstart-account-details").textContent = JSON.stringify(user, null, "  ");
+			// [END_EXCLUDE]
+		} else {
+			// User is signed out.
+			// [START_EXCLUDE]
+			document.getElementById("quickstart-sign-in-status").textContent = "Signed out";
+			document.getElementById("quickstart-sign-in").textContent = "Sign in with Google";
+			document.getElementById("quickstart-account-details").textContent = "null";
+			document.getElementById("quickstart-oauthtoken").textContent = "null";
+			// [END_EXCLUDE]
+		}
+		// [START_EXCLUDE]
+		document.getElementById("quickstart-sign-in").disabled = false;
+		// [END_EXCLUDE]
+	});
+	// [END authstatelistener]
+	document.getElementById("quickstart-sign-in").addEventListener("click", toggleSignIn, false);
+}
 
-    //End Google UI Quick Start code
+//End Google UI Quick Start code
 
 function domSet(data, keys){
 
-	console.log('domSet called');
+	console.log("domSet called");
 
 	$("#table-body").empty();
 
 	for(var i = 0; i < keys.length; i++){
 		var now = moment();
-		var arrivalTime = moment(data[keys[i]].time, 'h:mm a');
+		var arrivalTime = moment(data[keys[i]].time, "h:mm a");
 
-		while(arrivalTime.isBefore(now, 'minute') === true){
-			arrivalTime.add(data[keys[i]].frequency, 'm');
+		while(arrivalTime.isBefore(now, "minute") === true){
+			arrivalTime.add(data[keys[i]].frequency, "m");
 		}
 
-		var buttonDelete = $("<button>").text('delete').addClass('btn btn-warning');
-		var buttonUpdate = $("<button>").text('update').addClass('btn btn-warning');
+		var buttonDelete = $("<button>").text("delete").addClass("btn btn-warning");
+		var buttonUpdate = $("<button>").text("update").addClass("btn btn-warning");
 
 		//Scope work around: pass your extra data in as below:
-		buttonDelete.on('click', { extra : keys[i] }, function(event){
+		buttonDelete.on("click", { extra : keys[i] }, function(event){
 
 			if(firebase.auth().currentUser === null){
-				return alert('Pleas sign in first');
+				return alert("Pleas sign in first");
 			} else {
 				var data = event.data;
 				console.log(data.extra);	
 
 				trainsRef.child(data.extra).remove();
-				$(this).closest('tr').remove();
+				$(this).closest("tr").remove();
 			}
 					
 		});
 
 		//Scope work around: pass your extra data in as below
-		buttonUpdate.on('click', { extra : keys[i] }, function(event){
+		buttonUpdate.on("click", { extra : keys[i] }, function(event){
 
 			if(firebase.auth().currentUser === null){
-				return alert('Please sign in first');
+				return alert("Please sign in first");
 			} else {
 				var data = event.data;
 				console.log(data.extra);
@@ -166,16 +169,16 @@ function domSet(data, keys){
 				var firstTime = $("#time").val().trim();
 				var freq = $("#freq").val().trim();
 
-				$("#train-name").val('');
-				$("#destination").val('');
-				$("#time").val('');
-				$("#freq").val('');
+				$("#train-name").val("");
+				$("#destination").val("");
+				$("#time").val("");
+				$("#freq").val("");
 
-				database.ref('trains/' + data.extra).update({
+				database.ref("trains/" + data.extra).update({
 					train: trainName,
 					destination: trainDestination,
 					frequency: freq,
-					time: moment(firstTime, 'h:mm a').format('h:mm a')
+					time: moment(firstTime, "h:mm a").format("h:mm a")
 				});
 
 			}
@@ -185,40 +188,40 @@ function domSet(data, keys){
 		$("#table-body").append("<tr><td>"+data[keys[i]].train+"</td>"+
 			"<td>"+data[keys[i]].destination+"</td>"+
 			"<td>"+data[keys[i]].frequency+"</td>"+
-			"<td>"+arrivalTime.format('h:mm a')+"</td>"+
-			"<td>"+Math.abs(now.diff(moment(arrivalTime,'h:mm a'),'minutes'))+" minute(s)</td>"+
+			"<td>"+arrivalTime.format("h:mm a")+"</td>"+
+			"<td>"+Math.abs(now.diff(moment(arrivalTime,"h:mm a"),"minutes"))+" minute(s)</td>"+
 			"<td></td>"+
 			"<td></td></tr>");			
 
-		$("#table-body").children('tr').eq(i).children('td').eq(5).append(buttonUpdate);
-		$("#table-body").children('tr').children('td').last().append(buttonDelete);		
+		$("#table-body").children("tr").eq(i).children("td").eq(5).append(buttonUpdate);
+		$("#table-body").children("tr").children("td").last().append(buttonDelete);		
 	}
 		
 }
 
 
-$("#train-submit").on('click', function(event){
+$("#train-submit").on("click", function(event){
 
 	event.preventDefault();
 
 	if(firebase.auth().currentUser === null){
-		return alert('Please sign in first');
+		return alert("Please sign in first");
 	} else {
 		var trainName = $("#train-name").val().trim();
 		var trainDestination = $("#destination").val().trim();
 		var firstTime = $("#time").val().trim();
 		var freq = $("#freq").val().trim();
 
-		$("#train-name").val('');
-		$("#destination").val('');
-		$("#time").val('');
-		$("#freq").val('');
+		$("#train-name").val("");
+		$("#destination").val("");
+		$("#time").val("");
+		$("#freq").val("");
 
-		database.ref('trains/').push({
+		database.ref("trains/").push({
 			train: trainName,
 			destination: trainDestination,
 			frequency: freq,
-			time: moment(firstTime, 'h:mm a').format('h:mm a')
+			time: moment(firstTime, "h:mm a").format("h:mm a")
 		});
 	}
 
@@ -227,7 +230,7 @@ $("#train-submit").on('click', function(event){
 
 trainsRef.on("value", function(snapshot){
 
-	console.log('on value runs');
+	console.log("on value runs");
 	console.log(snapshot.val());
 
 	//If null, don't run domSet
@@ -242,12 +245,12 @@ trainsRef.on("value", function(snapshot){
 		domSet(data, keys);
 
 		clearInterval(timeOut);
-		timeOut = setInterval(function(){domSet(data, keys)}, 60000);
-		console.log('timeOut cleared and reset');
+		timeOut = setInterval(function(){domSet(data, keys);}, 60000);
+		console.log("timeOut cleared and reset");
 
 	} else {
 		clearInterval(timeOut);
-		console.log('timeOut cleared');
+		console.log("timeOut cleared");
 
 		//if deleting last row, this will cause change to show across browsers
 		$("#table-body").empty();
@@ -259,10 +262,10 @@ trainsRef.on("value", function(snapshot){
 	// }
 
 }, function(errorObject){
-	console.log('Errors handled: ' +errorObject.code);
+	console.log("Errors handled: " +errorObject.code);
 });
 
-window.addEventListener('load', initApp);
+window.addEventListener("load", initApp);
 
 
 
